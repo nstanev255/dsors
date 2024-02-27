@@ -32,7 +32,6 @@ pub fn connect() {
         // Block on read, for now....
         let message = socket.read();
         if message.is_ok() {
-            println!("Connection is established...");
             // If we can read from the api, then this means that we are okay to move forward and send the heartbeat event.
             let message_str = message.unwrap().into_text().unwrap();
             let json_response: Message = serde_json::from_str(message_str.as_str()).unwrap();
@@ -40,20 +39,23 @@ pub fn connect() {
 
             // This means that we need to send the initial heartbeat response...
             if json_response.op == 10 {
+                println!("Connection is established...");
                 heartbeat_sequence = json_response.d.unwrap().heartbeat_interval;
                 let heartbeat_response = serde_json::to_string(&create_heartbeat_response(heartbeat_sequence)).unwrap();
-                println!("request {:?}", heartbeat_response);
                 socket.send(tungstenite::Message::Text(heartbeat_response));
-            } else if json_response.op == 11 {
+            } else if json_response.op == 1 {
                 // We are inside the heartbeat loop already...
                 // This means that we need to send the heartbeat response again.
                 let heartbeat_response = serde_json::to_string(&create_heartbeat_response(heartbeat_sequence)).unwrap();
                 let res = socket.send(tungstenite::Message::Text(heartbeat_response));
                 if !res.is_ok() {
                     // This means that the discord gateway server is down, or something killed our connection...
-
+                    println!("Error, network is down...");
+                    break;
                 }
 
+            } else if json_response.op == 11 {
+                println!("Heartbeat was received..")
             }
 
 
