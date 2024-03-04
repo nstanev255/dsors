@@ -42,7 +42,10 @@ pub fn connect() {
                 println!("Connection is established...");
                 heartbeat_sequence = json_response.d.unwrap().heartbeat_interval;
                 let heartbeat_response = serde_json::to_string(&create_heartbeat_response(heartbeat_sequence)).unwrap();
-                socket.send(tungstenite::Message::Text(heartbeat_response));
+                let resp = socket.send(tungstenite::Message::Text(heartbeat_response));
+                if resp.is_ok() {
+                    println!("Sent heartbeat req...")
+                }
             } else if json_response.op == 1 {
                 // We are inside the heartbeat loop already...
                 // This means that we need to send the heartbeat response again.
