@@ -51,7 +51,7 @@ pub fn connect() {
                 // This means that we need to send the heartbeat response again.
                 let heartbeat_response = serde_json::to_string(&create_heartbeat_response(heartbeat_sequence)).unwrap();
                 let res = socket.send(tungstenite::Message::Text(heartbeat_response));
-                if !res.is_ok() {
+                if res.is_err() {
                     // This means that the discord gateway server is down, or something killed our connection...
                     println!("Error, network is down...");
                     break;

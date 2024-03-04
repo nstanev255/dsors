@@ -1,7 +1,7 @@
 use reqwest::blocking::Response;
 use serde::{Deserialize};
 use url::Url;
-use crate::error::error::DsorsError;
+use crate::error::dsors_error::DsorsError;
 
 pub fn send_req(url: Url) -> Result<Response, DsorsError>
 {
