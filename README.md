@@ -1,7 +1,6 @@
-# dsors
-![GitHub License](https://img.shields.io/github/license/nstanev255/dsors)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/nstanev255/dsors/rust.yml)
-[![fb77b5338833875acedf272cdba437a1.png](https://i.postimg.cc/0jpHWd39/fb77b5338833875acedf272cdba437a1.png)](https://postimg.cc/D4wgmsnN)
+# dsors ![GitHub License](https://img.shields.io/github/license/nstanev255/dsors) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/nstanev255/dsors/rust.yml)
+[![fb77b5338833875acedf272cdba437a1.png](https://i.postimg.cc/J7p8jjJj/fb77b5338833875acedf272cdba437a1.png)](https://postimg.cc/kDRLm6T5)
+
 Dsors is a small, unofficial, discord gateway sdk.
 
 ## how to use
@@ -15,4 +14,5 @@ At the heart of DSORS is the `tungstenite` package, which is used as the websock
 
 *NOTE: If you are running on ubuntu you will need to install the `libssl-dev` and `pkg-config`, in order for the connection to happen.*
 
-## 
+## license
+Distributed under the MIT License. See LICENSE.txt for more information.
