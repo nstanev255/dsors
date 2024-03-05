@@ -1,11 +1,15 @@
 use std::fmt::Debug;
+use std::net::TcpStream;
 use url::Url;
-use tungstenite::connect as t_connect;
+use tungstenite::{connect as t_connect, WebSocket};
 
 use serde_json;
 use serde::Deserialize;
 use serde::Serialize;
-use crate::ws::heartbeat_response::create_heartbeat_response;
+use tungstenite::stream::MaybeTlsStream;
+use crate::core::events::event::Event;
+use crate::core::heartbeat_response::create_heartbeat_response;
+use crate::error::dsors_error::DsorsError;
 
 #[derive(Deserialize, Serialize, Debug)]
 struct Message {
@@ -16,6 +20,28 @@ struct Message {
 #[derive(Deserialize, Serialize, Debug)]
 struct HeartbeatMessage {
     heartbeat_interval: i32
+}
+
+/**
+    This method will only start the connection, but will not enter into life loop...
+*/
+fn start_connection(url: Url) -> Result<WebSocket<MaybeTlsStream<TcpStream>>, DsorsError> {
+    match t_connect(url) {
+        Ok((socket, _)) => { Ok(socket) }
+        Err(err) => { Err(DsorsError::new("Error initializing connection for websocket...")) }
+    }
+}
+
+fn start_loop(socket: &mut WebSocket<MaybeTlsStream<TcpStream>>) {
+    loop {
+        let message = match socket.read() {
+            Ok(message) => { message }
+            Err(err) => {}
+        };
+
+        let event = Event::new(message);
+
+    }
 }
 
 

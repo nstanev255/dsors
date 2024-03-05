@@ -18,6 +18,9 @@ pub fn start_connection() {
     };
 
     println!("gateway url: {}", gateway_url);
+    // Initialize the connection to the websocket...
+
+
 }
 
 

@@ -3,11 +3,10 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
-mod ws;
-mod json;
+mod core;
 mod http;
 mod error;
 
 fn main() {
-    ws::initializer::start_connection();
+    core::initializer::start_connection();
 }

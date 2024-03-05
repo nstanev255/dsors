@@ -1,6 +1,6 @@
 # dsors
 
-dsors is a small discord gateway sdk.
+A small discord gateway sdk. 
 
 ## tungstenite
 At the heart of DSORS is the `tungstenite` package, which is used as the websocket library, which powers the client connection. \
