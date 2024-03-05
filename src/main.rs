@@ -3,10 +3,16 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
+use crate::core::websocket::start_loop;
+
 mod core;
 mod http;
 mod error;
 
 fn main() {
-    core::initializer::start_connection();
+    // Connect to discord api...
+    let mut socket = core::initializer::start_connection();
+
+    // Start the lifecycle loop...
+    start_loop(&mut socket);
 }

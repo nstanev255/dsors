@@ -1,5 +1,9 @@
+use std::net::TcpStream;
 use serde::{Deserialize};
+use tungstenite::stream::MaybeTlsStream;
+use tungstenite::WebSocket;
 use url::Url;
+use crate::core::websocket::{connect_ws};
 use crate::error::dsors_error::DsorsError;
 use crate::http::request;
 use crate::http::request::send_req;
@@ -7,7 +11,7 @@ use crate::http::request::send_req;
 /**
 This function will start up the connection to discord gateway api...
  */
-pub fn start_connection() {
+pub fn start_connection() -> WebSocket<MaybeTlsStream<TcpStream>> {
     // We need to get the most current gateway url...
     let gateway_url = match get_gateway_url() {
         Ok(url) => url,
@@ -20,6 +24,14 @@ pub fn start_connection() {
     println!("gateway url: {}", gateway_url);
     // Initialize the connection to the websocket...
 
+    let socket = connect_ws(Url::parse(gateway_url.as_str()).unwrap());
+    match socket {
+        Ok(socket) => { println!("successfully connected to discord !"); socket }
+        Err(err) => {
+            // If we can't connect to discord we will just print out an error...
+            panic!("Error connecting to {}. Error: {:?}", gateway_url, err );
+        }
+    }
 
 }
 

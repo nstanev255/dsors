@@ -1,9 +1,13 @@
-use serde::{Deserialize, Serialize};
-use serde_json::{Error, Value};
-use tungstenite::Message;
+use std::net::TcpStream;
+use serde::{Deserialize};
+use serde_repr::Deserialize_repr;
+use tungstenite::{Message, WebSocket};
+use tungstenite::stream::MaybeTlsStream;
 use crate::error::dsors_error::DsorsError;
 
-enum Opcode {
+#[derive(Debug, PartialEq, Deserialize_repr)]
+#[repr(u8)]
+pub enum Opcode {
     Dispatch = 0,
     Heartbeat = 1,
     Identify = 2,
@@ -15,22 +19,32 @@ enum Opcode {
     InvalidSession = 9,
     Hello = 10,
     HeartbeatAck = 11,
-
 }
 
 #[derive(Deserialize)]
-pub struct Event {
-    op: Opcode
+pub struct OpcodeEvent {
+    op: Opcode,
 }
 
-impl Event {
-    // We will actually generate the event directly from the message that was received from the socket...
-    pub fn new(message: Message) -> Result<Event, DsorsError> {
-        let json_str = message.to_string().as_str();
+// This function is used to get the initial opcode...
+pub fn get_opcode(message: &Message) -> Result<Opcode, DsorsError> {
+    let json_str = message.to_text().unwrap();
 
-        match serde_json::from_str(json_str) {
-            Ok(obj) => { Ok(obj) }
-            Err(err) => { Err(DsorsError::new(format!("Error reading to Event the following json string : {}", json_str).as_str())) }
-        }
+    let event: Result<OpcodeEvent, _> = serde_json::from_str(json_str);
+    match event {
+        Ok(e) => { Ok(e.op) }
+        Err(err) => { Err(DsorsError::new(format!("Error reading to Event the following json string : {}. SerdeError: {}", json_str, err).as_str())) }
+    }
+}
+
+pub trait Event {
+    fn handle(&self, socket: &mut WebSocket<MaybeTlsStream<TcpStream>>);
+}
+
+pub struct EmptyEvent;
+impl Event for EmptyEvent {
+    fn handle(&self, socket: &mut WebSocket<MaybeTlsStream<TcpStream>>) {
+        // We will consider this as a placeholder event, and will be deleted eventually...
+        println!("Placeholder event...")
     }
 }
