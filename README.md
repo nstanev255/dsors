@@ -1,6 +1,6 @@
+![fb77b5338833875acedf272cdba437a1.png](https://i.postimg.cc/J7p8jjJj/fb77b5338833875acedf272cdba437a1.png)
 # dsors 
 ![GitHub License](https://img.shields.io/github/license/nstanev255/dsors) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/nstanev255/dsors/rust.yml)
-[![fb77b5338833875acedf272cdba437a1.png](https://i.postimg.cc/J7p8jjJj/fb77b5338833875acedf272cdba437a1.png)](https://postimg.cc/kDRLm6T5)
 
 Dsors is a small, unofficial, discord gateway sdk.
 
