@@ -1,8 +1,6 @@
-use std::net::TcpStream;
 use serde::Deserialize;
-use tungstenite::stream::MaybeTlsStream;
-use tungstenite::WebSocket;
 use crate::core::events::event::{Event, Opcode};
+use crate::core::websocket::WsConnection;
 
 #[derive(Deserialize)]
 pub struct HelloEvent {
@@ -16,8 +14,7 @@ struct HelloData {
 }
 
 impl Event for HelloEvent {
-    fn handle(&self, socket: &mut WebSocket<MaybeTlsStream<TcpStream>>) {
-        println!("event here...")
-        // TODO: Handle...
+    fn handle(&self, connection: &WsConnection) {
+        //TODO: handle this event...
     }
 }

@@ -3,7 +3,10 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
-use crate::core::websocket::start_loop;
+
+use url::Url;
+use crate::core::websocket::WsConnection;
+use crate::http::gateway::get_gateway_url;
 
 mod core;
 mod http;
@@ -11,8 +14,12 @@ mod error;
 
 fn main() {
     // Connect to discord api...
-    let mut socket = core::initializer::start_connection();
+    let url = get_gateway_url().unwrap();
+    let mut connection = match WsConnection::connect(Url::parse(url.as_str()).unwrap()) {
+        Ok(connection) => { connection }
+        Err(error) => { panic!("Fatal error: Could not connect...") }
+    };
 
-    // Start the lifecycle loop...
-    start_loop(&mut socket);
+    // Start the connection...
+    connection.start();
 }

@@ -1,8 +1,7 @@
-use std::net::TcpStream;
 use serde::{Deserialize};
 use serde_repr::Deserialize_repr;
-use tungstenite::{Message, WebSocket};
-use tungstenite::stream::MaybeTlsStream;
+use tungstenite::{Message};
+use crate::core::websocket::WsConnection;
 use crate::error::dsors_error::DsorsError;
 
 #[derive(Debug, PartialEq, Deserialize_repr)]
@@ -38,12 +37,12 @@ pub fn get_opcode(message: &Message) -> Result<Opcode, DsorsError> {
 }
 
 pub trait Event {
-    fn handle(&self, socket: &mut WebSocket<MaybeTlsStream<TcpStream>>);
+    fn handle(&self, connection: &WsConnection);
 }
 
 pub struct EmptyEvent;
 impl Event for EmptyEvent {
-    fn handle(&self, socket: &mut WebSocket<MaybeTlsStream<TcpStream>>) {
+    fn handle(&self, socket: &WsConnection) {
         // We will consider this as a placeholder event, and will be deleted eventually...
         println!("Placeholder event...")
     }
