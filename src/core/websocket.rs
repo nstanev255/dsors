@@ -89,7 +89,7 @@ impl WsConnection {
             return Err(DsorsError::new("Error sending message..."));
         }
 
-        Ok(())
+        Ok(());
     }
 }
 
