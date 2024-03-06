@@ -1,10 +1,10 @@
 use serde::{Deserialize};
-use serde_repr::Deserialize_repr;
+use serde_repr::{Deserialize_repr, Serialize_repr};
 use tungstenite::{Message};
 use crate::core::websocket::WsConnection;
 use crate::error::dsors_error::DsorsError;
 
-#[derive(Debug, PartialEq, Deserialize_repr)]
+#[derive(Debug, PartialEq, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum Opcode {
     Dispatch = 0,
@@ -37,12 +37,12 @@ pub fn get_opcode(message: &Message) -> Result<Opcode, DsorsError> {
 }
 
 pub trait Event {
-    fn handle(&self, connection: &WsConnection);
+    fn handle(&self, connection: &mut WsConnection);
 }
 
 pub struct EmptyEvent;
 impl Event for EmptyEvent {
-    fn handle(&self, socket: &WsConnection) {
+    fn handle(&self, socket: &mut WsConnection) {
         // We will consider this as a placeholder event, and will be deleted eventually...
         println!("Placeholder event...")
     }
