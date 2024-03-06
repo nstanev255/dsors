@@ -9,7 +9,6 @@ use serde::Serialize;
 use tungstenite::stream::MaybeTlsStream;
 use crate::core::events::event::get_opcode;
 use crate::core::events::event_factory::EventFactory;
-use crate::core::heartbeat_response::create_heartbeat_response;
 use crate::error::dsors_error::DsorsError;
 
 #[derive(Deserialize, Serialize, Debug)]
