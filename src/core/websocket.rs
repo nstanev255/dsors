@@ -45,7 +45,7 @@ impl WsConnection {
             Err(err) => { return Err(err) }
         };
 
-        return Ok(WsConnection {_socket: socket});
+        Ok(WsConnection {_socket: socket})
     }
 
     pub fn start(&mut self) {
@@ -73,7 +73,7 @@ impl WsConnection {
             println!("opcode {:?}", opcode);
             // Create from factory and call the handle method...
             let event = EventFactory::new_event(opcode, message.to_string().as_str());
-            event.handle(&self);
+            event.handle(self);
         }
     }
 
@@ -85,11 +85,11 @@ impl WsConnection {
     {
         let req_str = serde_json::to_string(&data).unwrap();
         let resp = self._socket.send(tungstenite::Message::Text(req_str));
-        if !resp.is_ok() {
+        if resp.is_err() {
             return Err(DsorsError::new("Error sending message..."));
         }
 
-        return Ok(());
+        Ok(())
     }
 }
 
