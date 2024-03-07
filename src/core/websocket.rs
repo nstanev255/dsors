@@ -22,9 +22,14 @@ struct HeartbeatMessage {
     heartbeat_interval: i32,
 }
 
+pub struct Credentials {
+    pub token: String
+}
+
 
 pub struct WsConnection {
     _socket: WebSocket<MaybeTlsStream<TcpStream>>,
+    pub credentials: Credentials
 }
 
 impl WsConnection {
@@ -38,13 +43,13 @@ impl WsConnection {
     /**
     This method will only start the connection, but will not enter into life loop...
      */
-    pub fn connect(url: Url) -> Result<WsConnection, DsorsError> {
+    pub fn connect(url: Url, token: String) -> Result<WsConnection, DsorsError> {
         let socket = match WsConnection::connect_ws(url) {
             Ok(socket) => { socket }
             Err(err) => { return Err(err) }
         };
 
-        Ok(WsConnection {_socket: socket})
+        Ok(WsConnection {_socket: socket, credentials: Credentials { token }})
     }
 
     pub fn start(&mut self) {

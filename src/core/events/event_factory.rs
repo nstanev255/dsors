@@ -1,5 +1,5 @@
 use crate::core::events::event::{Event, Opcode, EmptyEvent};
-use crate::core::events::heartbeat::HelloEvent;
+use crate::core::events::hello::HelloEvent;
 
 pub struct EventFactory;
 
