@@ -15,7 +15,7 @@ mod error;
 fn main() {
     // Connect to discord api...
     let url = get_gateway_url().unwrap();
-    let mut connection = match WsConnection::connect(Url::parse(url.as_str()).unwrap(), String::from("")) {
+    let mut connection = match WsConnection::connect(Url::parse(url.as_str()).unwrap(), String::from("token_here")) {
         Ok(connection) => { connection }
         Err(error) => { panic!("Fatal error: Could not connect...") }
     };

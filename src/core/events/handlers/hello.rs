@@ -35,11 +35,6 @@ struct IdentifyProperties {
 }
 
 impl Event for HelloEvent {
-
-    fn send_identify(connection: &mut WsConnection) {
-
-    }
-
     fn handle(&self, connection: &mut WsConnection) {
         // Get the data from the interval...
         let interval = match &self.d {

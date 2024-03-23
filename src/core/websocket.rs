@@ -70,7 +70,8 @@ impl WsConnection {
                 Ok(opcode) => { opcode }
                 Err(err) => {
                     println!("Error reading opcode : {}", err);
-                    continue;
+                    // If we can't read the opcode, this means that we should just exit the program.
+                    std::process::exit(0);
                 }
             };
 
