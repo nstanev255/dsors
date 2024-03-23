@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use serde::de::Unexpected::Str;
 use crate::core::events::event::{Event, Opcode};
 use crate::core::websocket::WsConnection;
 
@@ -14,6 +13,7 @@ struct HelloData {
     heartbeat_interval: u64
 }
 
+//TODO: Figure out a way to handle events that we need to send, more clean...
 #[derive(Serialize)]
 struct Identify {
     op: Opcode,
@@ -35,6 +35,11 @@ struct IdentifyProperties {
 }
 
 impl Event for HelloEvent {
+
+    fn send_identify(connection: &mut WsConnection) {
+
+    }
+
     fn handle(&self, connection: &mut WsConnection) {
         // Get the data from the interval...
         let interval = match &self.d {
