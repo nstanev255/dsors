@@ -5,6 +5,7 @@
 
 
 use url::Url;
+use dotenv::dotenv;
 use crate::core::websocket::WsConnection;
 use crate::http::gateway::get_gateway_url;
 
@@ -15,7 +16,14 @@ mod error;
 fn main() {
     // Connect to discord api...
     let url = get_gateway_url().unwrap();
-    let mut connection = match WsConnection::connect(Url::parse(url.as_str()).unwrap(), String::from("token_here")) {
+
+    // Load .env file...
+    dotenv().ok();
+
+    // Get the discord token.
+    let discord_token = std::env::var("DISCORD_API_TOKEN").expect("env var DISCORD_API_TOKEN is missing");
+
+    let mut connection = match WsConnection::connect(Url::parse(url.as_str()).unwrap(), discord_token) {
         Ok(connection) => { connection }
         Err(error) => { panic!("Fatal error: Could not connect...") }
     };
