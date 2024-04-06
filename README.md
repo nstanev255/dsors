@@ -11,7 +11,7 @@ Currently `dsors` is not usable as a library, for now its a normal rust program.
 Feel free to contribute to the `dsors` library by opening an issue, or a pull request.
 
 ## tungstenite
-At the heart of DSORS is the `tungstenite` package, which is used as the websocket library, which powers the client connection. For now only `blocking` is used as a primary read/write method to the sockets, but in the near future the library will move to `tokio` and `async`. 
+At the heart of DSORS is the `tokio-tungstenite` package, which is used as the websocket library, which powers the client connection and the `tokio` runtime.
 
 *NOTE: If you are running on ubuntu you will need to install the `libssl-dev` and `pkg-config`, in order for the connection to happen.*
 
