@@ -1,6 +1,6 @@
+use async_trait::async_trait;
 use serde::{Deserialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
-use tungstenite::{Message};
 use crate::core::websocket::WsConnection;
 use crate::error::dsors_error::DsorsError;
 
@@ -26,7 +26,7 @@ pub struct OpcodeEvent {
 }
 
 // This function is used to get the initial opcode...
-pub fn get_opcode(message: &Message) -> Result<Opcode, DsorsError> {
+pub fn get_opcode(message: &tokio_tungstenite::tungstenite::protocol::Message) -> Result<Opcode, DsorsError> {
     let json_str = message.to_text().unwrap();
 
     let event: Result<OpcodeEvent, _> = serde_json::from_str(json_str);
@@ -36,13 +36,16 @@ pub fn get_opcode(message: &Message) -> Result<Opcode, DsorsError> {
     }
 }
 
+#[async_trait]
 pub trait Event {
-    fn handle(&self, connection: &mut WsConnection);
+    async fn handle(&self, connection: &mut WsConnection);
 }
 
 pub struct EmptyEvent;
+
+#[async_trait]
 impl Event for EmptyEvent {
-    fn handle(&self, socket: &mut WsConnection) {
+    async fn handle(&self, socket: &mut WsConnection) {
         // We will consider this as a placeholder event, and will be deleted eventually...
         println!("Placeholder event...")
     }

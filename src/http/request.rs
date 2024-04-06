@@ -1,29 +1,29 @@
-use reqwest::blocking::Response;
+use reqwest::Response;
 use serde::{Deserialize};
 use url::Url;
 use crate::error::dsors_error::DsorsError;
 
-pub fn send_req(url: Url) -> Result<Response, DsorsError>
+pub async fn send_req(url: Url) -> Result<Response, DsorsError>
 {
     let req_url = url.as_str();
 
-     match reqwest::blocking::get(req_url) {
+     match reqwest::get(req_url).await {
         Ok(resp) => Ok(resp),
         Err(err) => { return Err(DsorsError::new(format!("Error sending GET request... Error: {:?}", err).as_str())); }
     }
 }
 
-fn get_req_body(response: Response) -> Result<String, DsorsError> {
-    match response.text() {
+async fn get_req_body(response: Response) -> Result<String, DsorsError> {
+    match response.text().await {
         Ok(text) => { Ok(text) }
         Err(err) => { return Err(DsorsError::new(format!("Error reading response body.. Error: {:?}", err).as_str())) }
     }
 }
 
-pub fn response_to_json<T>(response: Response) -> Result<T, DsorsError>
+pub async fn response_to_json<T>(response: Response) -> Result<T, DsorsError>
     where T: for<'a> Deserialize<'a>
 {
-    let json = match get_req_body(response) {
+    let json = match get_req_body(response).await {
         Ok(json) => { json }
         Err(error) => { return Err(error); }
     };
