@@ -103,6 +103,7 @@ impl WsConnection {
             _ = heartbeat_interval.tick() => {
                     println!("sending heartbeat...")
                     // We will send heartbeat event here, eventually...
+                    //TODO: Handle sending the actual message to the api gateway in a separate issue.
             }
         }
         }
