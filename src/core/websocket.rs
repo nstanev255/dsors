@@ -9,11 +9,11 @@ use serde::Deserialize;
 use serde::Serialize;
 use tokio::net::TcpStream;
 use tokio_tungstenite::{connect_async, MaybeTlsStream, WebSocketStream};
-use crate::core::commands::cold_start::{create_identify, get_heartbeat_interval};
+use crate::core::commands::hello::get_heartbeat_interval;
+use crate::core::commands::identify::create_identify;
 
 use crate::core::events::event::{get_opcode, Opcode};
 use crate::core::events::event_factory::EventFactory;
-use crate::core::events::handlers::hello::HelloEvent;
 use crate::error::dsors_error::DsorsError;
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -60,13 +60,6 @@ impl WsConnection {
         Ok(WsConnection { _ws_recv: ws_receiver, _ws_sender: ws_sender, credentials: Credentials { token } })
     }
 
-    pub async fn authenticate(ws_connection: &mut WsConnection) -> u64 {
-        let interval = get_heartbeat_interval(&mut ws_connection._ws_recv).await;
-        let identify_intent = create_identify(&ws_connection.credentials);
-
-        interval
-    }
-
     pub async fn start(mut connection: WsConnection) {
         let mut heartbeat_interval = tokio::time::interval(Duration::from_millis(1024));
 
@@ -89,9 +82,7 @@ impl WsConnection {
                                 println!("opcode {:?}", opcode);
                                 // Create from factory and call the handle method...
                                 if opcode == Opcode::Hello {
-                                    let hello_event: HelloEvent = serde_json::from_str(msg.to_text().unwrap()).unwrap();
-                                    println!("Hello event {:?}", hello_event);
-                                    let interval = hello_event.d.unwrap().heartbeat_interval;
+                                    let interval = get_heartbeat_interval(msg);
                                     heartbeat_interval = tokio::time::interval(Duration::from_millis(interval));
 
                                     // Send authentication
