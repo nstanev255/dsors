@@ -69,7 +69,6 @@ impl WsConnection {
                 match msg {
                     Some(msg) => {
                             let msg = msg.unwrap();
-                                println!("{:?}", msg);
                             if msg.is_text() ||msg.is_binary() {
                                 let opcode = match get_opcode(&msg) {
                                 Ok(opcode) => { opcode }
@@ -79,8 +78,8 @@ impl WsConnection {
                                     std::process::exit(0);
                                  }
                                 };
-                                println!("opcode {:?}", opcode);
-                                // Create from factory and call the handle method...
+                                // Handle the hello event separately, as it is a special event where we get the heartbeat interval.
+                                // We also need to handle the authentication to the discord gateway (send identify event).
                                 if opcode == Opcode::Hello {
                                     let interval = get_heartbeat_interval(msg);
                                     heartbeat_interval = tokio::time::interval(Duration::from_millis(interval));
@@ -90,6 +89,7 @@ impl WsConnection {
                                     connection.send_message(identity_event).await.expect("Cannot send identity command...");
 
                                 } else {
+                                    // All other events should be handled with the Factory pattern.
                                     let event = EventFactory::new_event(opcode, msg.to_string().as_str());
                                     event.handle(&mut connection).await;
                                 }
