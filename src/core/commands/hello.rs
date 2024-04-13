@@ -1,10 +1,8 @@
 use serde::Deserialize;
 use tokio_tungstenite::tungstenite::Message;
-use crate::core::events::event::Opcode;
 
 #[derive(Deserialize, Debug)]
 pub struct HelloEvent {
-    op: Opcode,
     pub d: Option<HelloData>
 }
 

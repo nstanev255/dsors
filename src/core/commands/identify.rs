@@ -1,5 +1,5 @@
 use serde::Serialize;
-use crate::core::events::event::Opcode;
+use crate::core::commands::opcode::Opcode;
 use crate::core::websocket::Credentials;
 
 #[derive(Serialize)]

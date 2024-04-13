@@ -11,8 +11,8 @@ use tokio::net::TcpStream;
 use tokio_tungstenite::{connect_async, MaybeTlsStream, WebSocketStream};
 use crate::core::commands::hello::get_heartbeat_interval;
 use crate::core::commands::identify::create_identify;
+use crate::core::commands::opcode::{get_opcode, Opcode};
 
-use crate::core::events::event::{get_opcode, Opcode};
 use crate::core::events::event_factory::EventFactory;
 use crate::error::dsors_error::DsorsError;
 
@@ -69,6 +69,7 @@ impl WsConnection {
                 match msg {
                     Some(msg) => {
                             let msg = msg.unwrap();
+                            println!("{}", msg);
                             if msg.is_text() ||msg.is_binary() {
                                 let opcode = match get_opcode(&msg) {
                                 Ok(opcode) => { opcode }
