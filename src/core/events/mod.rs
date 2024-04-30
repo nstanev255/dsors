@@ -1,3 +1,3 @@
 pub mod event;
 pub mod event_factory;
-pub mod handlers;
+pub mod dispatch;
