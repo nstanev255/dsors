@@ -5,7 +5,7 @@ use crate::core::events::event::Event;
 use crate::core::websocket::WsConnection;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-#[allow(non_camel_case_types)]
+#[allow(non_camel_case_types, clippy::upper_case_acronyms)]
 pub enum DispatchType {
     READY,
     GUILD_CREATE,
