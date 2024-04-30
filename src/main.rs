@@ -1,9 +1,3 @@
-// For now we will allow dead code, as the library is still in its early stages.
-// TODO: Remove this when the library is more stable....
-#![allow(dead_code)]
-#![allow(unused_variables)]
-
-
 use url::Url;
 use dotenv::dotenv;
 use crate::core::websocket::WsConnection;
@@ -27,7 +21,7 @@ async fn main() {
 
     let connection = match WsConnection::connect(Url::parse(url.as_str()).unwrap(), discord_token).await {
         Ok(connection) => { connection }
-        Err(error) => { panic!("Fatal error: Could not connect...") }
+        Err(_) => { panic!("Fatal error: Could not connect...") }
     };
 
     // Start the connection...

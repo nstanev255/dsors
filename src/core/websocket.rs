@@ -11,8 +11,8 @@ use tokio::net::TcpStream;
 use tokio_tungstenite::{connect_async, MaybeTlsStream, WebSocketStream};
 use crate::core::commands::hello::get_heartbeat_interval;
 use crate::core::commands::identify::create_identify;
+use crate::core::commands::opcode::{get_opcode, Opcode};
 
-use crate::core::events::event::{get_opcode, Opcode};
 use crate::core::events::event_factory::EventFactory;
 use crate::error::dsors_error::DsorsError;
 
@@ -27,15 +27,23 @@ struct HeartbeatMessage {
     heartbeat_interval: i32,
 }
 
+// Api credentials.
 pub struct Credentials {
     pub token: String,
 }
 
+// // Metadata about the bot user.
+pub struct Bot {
+    pub id: String,
+    pub username: String,
+    pub avatar: String,
+}
 
 pub struct WsConnection {
     _ws_recv: SplitStream<WebSocketStream<MaybeTlsStream<TcpStream>>>,
     _ws_sender: SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, tokio_tungstenite::tungstenite::Message>,
     pub credentials: Credentials,
+    pub bot: Bot,
 }
 
 impl WsConnection {
@@ -57,7 +65,12 @@ impl WsConnection {
 
         let (ws_sender, ws_receiver) = socket.split();
 
-        Ok(WsConnection { _ws_recv: ws_receiver, _ws_sender: ws_sender, credentials: Credentials { token } })
+        Ok(WsConnection {
+            _ws_recv: ws_receiver,
+            _ws_sender: ws_sender,
+            credentials: Credentials { token },
+            bot: Bot { id: String::from(""), username: String::from(""), avatar: String::from("") },
+        })
     }
 
     pub async fn start(mut connection: WsConnection) {
@@ -69,6 +82,7 @@ impl WsConnection {
                 match msg {
                     Some(msg) => {
                             let msg = msg.unwrap();
+                            println!("{}", msg);
                             if msg.is_text() ||msg.is_binary() {
                                 let opcode = match get_opcode(&msg) {
                                 Ok(opcode) => { opcode }
@@ -91,7 +105,7 @@ impl WsConnection {
                                 } else {
                                     // All other events should be handled with the Factory pattern.
                                     let event = EventFactory::new_event(opcode, msg.to_string().as_str());
-                                    event.handle(&mut connection).await;
+                                    event.handle(&mut connection, msg.to_string()).await;
                                 }
                             } else if msg.is_close() {
                                 break;
